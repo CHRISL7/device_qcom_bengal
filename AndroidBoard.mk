@@ -29,7 +29,7 @@ endif
 # Compile Linux Kernel
 #----------------------------------------------------------------------
 ifeq ($(KERNEL_DEFCONFIG),)
-     KERNEL_DEFCONFIG := vendor/lito_defconfig
+     KERNEL_DEFCONFIG := vendor/bengal_defconfig
 endif
 
 ifeq ($(TARGET_KERNEL_SOURCE),)
