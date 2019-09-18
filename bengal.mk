@@ -185,6 +185,11 @@ AUDIO_DLKM += audio_bolero_cdc.ko
 AUDIO_DLKM += audio_va_macro.ko
 AUDIO_DLKM += audio_rx_macro.ko
 AUDIO_DLKM += audio_tx_macro.ko
+AUDIO_DLKM += audio_machine_bengal.ko
+AUDIO_DLKM += audio_wsa881x_analog.ko
+AUDIO_DLKM += audio_snd_event.ko
+AUDIO_DLKM += audio_wcd937x_slave.ko
+AUDIO_DLKM += audio_wcd937x.ko
 
 # Kernel modules install path
 KERNEL_MODULES_INSTALL := dlkm
