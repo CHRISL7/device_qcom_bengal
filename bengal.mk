@@ -176,22 +176,15 @@ AUDIO_DLKM += audio_pinctrl_lpi.ko
 AUDIO_DLKM += audio_swr.ko
 AUDIO_DLKM += audio_wcd_core.ko
 AUDIO_DLKM += audio_swr_ctrl.ko
-AUDIO_DLKM += audio_wsa881x.ko
 AUDIO_DLKM += audio_platform.ko
-AUDIO_DLKM += audio_hdmi.ko
 AUDIO_DLKM += audio_stub.ko
 AUDIO_DLKM += audio_wcd9xxx.ko
 AUDIO_DLKM += audio_mbhc.ko
 AUDIO_DLKM += audio_native.ko
-AUDIO_DLKM += audio_wcd938x.ko
-AUDIO_DLKM += audio_wcd938x_slave.ko
 AUDIO_DLKM += audio_bolero_cdc.ko
-AUDIO_DLKM += audio_wsa_macro.ko
 AUDIO_DLKM += audio_va_macro.ko
 AUDIO_DLKM += audio_rx_macro.ko
 AUDIO_DLKM += audio_tx_macro.ko
-AUDIO_DLKM += audio_machine_lito.ko
-AUDIO_DLKM += audio_snd_event.ko
 
 # Kernel modules install path
 KERNEL_MODULES_INSTALL := dlkm
