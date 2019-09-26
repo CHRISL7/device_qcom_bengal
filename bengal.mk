@@ -89,7 +89,6 @@ TARGET_USES_QMAA := true
 #TARGET_USES_QMAA_OVERRIDE_PERF    := true
 
 TARGET_USES_QMAA_OVERRIDE_DISPLAY := false
-TARGET_USES_QMAA_OVERRIDE_AUDIO   := false
 TARGET_USES_QMAA_OVERRIDE_VIDEO   := false
 TARGET_USES_QMAA_OVERRIDE_CAMERA  := false
 TARGET_USES_QMAA_OVERRIDE_GFX     := false
@@ -145,6 +144,7 @@ PRODUCT_PACKAGES += libGLES_android
 
 PRODUCT_PACKAGES += fs_config_files
 PRODUCT_PACKAGES += gpio-keys.kl
+PRODUCT_PACKAGES += libvolumelistener
 
 ifeq ($(ENABLE_AB), true)
 # A/B related packages
