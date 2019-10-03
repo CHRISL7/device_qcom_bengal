@@ -79,6 +79,8 @@ TARGET_USES_QMAA := true
 #true means overriding global QMAA for this tech area
 #false means using global, no override
 
+TARGET_USES_QMAA_OVERRIDE_KERNEL_TESTS_INTERNAL := true
+
 #TARGET_USES_QMAA_OVERRIDE_DISPLAY := true
 #TARGET_USES_QMAA_OVERRIDE_AUDIO   := true
 #TARGET_USES_QMAA_OVERRIDE_VIDEO   := true
