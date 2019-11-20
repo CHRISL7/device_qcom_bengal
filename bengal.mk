@@ -59,7 +59,7 @@ PRODUCT_BRAND := qti
 PRODUCT_MODEL := Bengal for arm64
 
 
-TARGET_USES_AOSP := true
+TARGET_USES_AOSP := false
 TARGET_USES_AOSP_FOR_AUDIO := false
 TARGET_USES_QCOM_BSP := false
 
