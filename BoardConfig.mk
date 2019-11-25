@@ -27,6 +27,11 @@ BOARD_PRESIL_BUILD := true
 
 USE_OPENGL_RENDERER := true
 
+
+# Set Header version for bootimage
+BOARD_BOOTIMG_HEADER_VERSION := 1
+BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
+
 ifeq ($(ENABLE_AB), true)
 # Defines for enabling A/B builds
 AB_OTA_UPDATER := true
@@ -75,21 +80,21 @@ BOARD_PROPERTY_OVERRIDES_SPLIT_ENABLED := true
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
-BOARD_BOOTIMAGE_PARTITION_SIZE := 0x06000000
+BOARD_BOOTIMAGE_PARTITION_SIZE := 0x04000000
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3221225472
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 10737418240
 BOARD_PERSISTIMAGE_PARTITION_SIZE := 33554432
 BOARD_PERSISTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_METADATAIMAGE_PARTITION_SIZE := 16777216
 BOARD_DTBOIMG_PARTITION_SIZE := 0x0800000
-BOARD_VENDORIMAGE_PARTITION_SIZE := 1395863552
+BOARD_VENDORIMAGE_PARTITION_SIZE := 1073741824
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
 
 TARGET_USES_ION := true
 TARGET_USES_NEW_ION_API :=true
 
-BOARD_KERNEL_CMDLINE := console=ttyMSM0,115200,n8 earlycon=msm_geni_serial,0x888000 androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.memcg=1 lpm_levels.sleep_disabled=1 video=vfb:640x400,bpp=32,memsize=3072000 msm_rtb.filter=0x237 service_locator.enable=1 androidboot.usbcontroller=a600000.dwc3 swiotlb=2048
+BOARD_KERNEL_CMDLINE := console=ttyMSM0,115200n8 earlycon=msm_geni_serial,0x4a90000 androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.memcg=1 lpm_levels.sleep_disabled=1 video=vfb:640x400,bpp=32,memsize=3072000 msm_rtb.filter=0x237 service_locator.enable=1 swiotlb=2048
 
 BOARD_KERNEL_BASE        := 0x00000000
 BOARD_KERNEL_PAGESIZE    := 4096
@@ -111,14 +116,8 @@ TARGET_NO_RPC := true
 TARGET_PLATFORM_DEVICE_BASE := /devices/soc.0/
 TARGET_INIT_VENDOR_LIB := libinit_msm
 
-#Disable appended dtb.
-TARGET_KERNEL_APPEND_DTB := false
+TARGET_KERNEL_APPEND_DTB := true
 TARGET_COMPILE_WITH_MSM_KERNEL := true
-
-#Enable dtb in boot image and boot image header version 2 support.
-BOARD_INCLUDE_DTB_IN_BOOTIMG := true
-BOARD_BOOTIMG_HEADER_VERSION := 2
-BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
 
 #Enable PD locater/notifier
 TARGET_PD_SERVICE_ENABLED := true
@@ -158,9 +157,6 @@ USE_SENSOR_HAL_VER := 2.0
 -include vendor/qcom/defs/board-defs/vendor/*.mk
 #################################################################################
 
-# TODO(b/124534788): Temporarily allow eng and debug LOCAL_MODULE_TAGS
-BUILD_BROKEN_ENG_DEBUG_TAGS:=true
-
 BUILD_BROKEN_DUP_RULES := true
 BUILD_BROKEN_PHONY_TARGETS := true
 BOARD_VENDOR_KERNEL_MODULES := \
@@ -173,24 +169,21 @@ BOARD_VENDOR_KERNEL_MODULES := \
     $(KERNEL_MODULES_OUT)/audio_swr.ko \
     $(KERNEL_MODULES_OUT)/audio_wcd_core.ko \
     $(KERNEL_MODULES_OUT)/audio_swr_ctrl.ko \
-    $(KERNEL_MODULES_OUT)/audio_wsa881x.ko \
     $(KERNEL_MODULES_OUT)/audio_platform.ko \
-    $(KERNEL_MODULES_OUT)/audio_hdmi.ko \
     $(KERNEL_MODULES_OUT)/audio_stub.ko \
     $(KERNEL_MODULES_OUT)/audio_wcd9xxx.ko \
     $(KERNEL_MODULES_OUT)/audio_mbhc.ko \
-    $(KERNEL_MODULES_OUT)/audio_wcd938x.ko \
-    $(KERNEL_MODULES_OUT)/audio_wcd938x_slave.ko \
     $(KERNEL_MODULES_OUT)/audio_bolero_cdc.ko \
-    $(KERNEL_MODULES_OUT)/audio_wsa_macro.ko \
     $(KERNEL_MODULES_OUT)/audio_va_macro.ko \
     $(KERNEL_MODULES_OUT)/audio_rx_macro.ko \
     $(KERNEL_MODULES_OUT)/audio_tx_macro.ko \
-    $(KERNEL_MODULES_OUT)/audio_native.ko
-
-# $(KERNEL_MODULES_OUT)/audio_machine_lito.ko
-# $(KERNEL_MODULES_OUT)/audio_snd_event.ko
-# $(KERNEL_MODULES_OUT)/audio_pinctrl_lpi.ko
+    $(KERNEL_MODULES_OUT)/audio_native.ko \
+    $(KERNEL_MODULES_OUT)/audio_machine_bengal.ko \
+    $(KERNEL_MODULES_OUT)/audio_wsa881x_analog.ko \
+    $(KERNEL_MODULES_OUT)/audio_pinctrl_lpi.ko \
+    $(KERNEL_MODULES_OUT)/audio_snd_event.ko \
+    $(KERNEL_MODULES_OUT)/audio_wcd937x_slave.ko \
+    $(KERNEL_MODULES_OUT)/audio_wcd937x.ko
 
 # Enable QG user space
 PMIC_QG_SUPPORT := true

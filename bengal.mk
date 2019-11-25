@@ -89,7 +89,6 @@ TARGET_USES_QMAA := true
 #TARGET_USES_QMAA_OVERRIDE_PERF    := true
 
 TARGET_USES_QMAA_OVERRIDE_DISPLAY := false
-TARGET_USES_QMAA_OVERRIDE_AUDIO   := false
 TARGET_USES_QMAA_OVERRIDE_VIDEO   := false
 TARGET_USES_QMAA_OVERRIDE_CAMERA  := false
 TARGET_USES_QMAA_OVERRIDE_GFX     := false
@@ -145,6 +144,7 @@ PRODUCT_PACKAGES += libGLES_android
 
 PRODUCT_PACKAGES += fs_config_files
 PRODUCT_PACKAGES += gpio-keys.kl
+PRODUCT_PACKAGES += libvolumelistener
 
 ifeq ($(ENABLE_AB), true)
 # A/B related packages
@@ -176,22 +176,20 @@ AUDIO_DLKM += audio_pinctrl_lpi.ko
 AUDIO_DLKM += audio_swr.ko
 AUDIO_DLKM += audio_wcd_core.ko
 AUDIO_DLKM += audio_swr_ctrl.ko
-AUDIO_DLKM += audio_wsa881x.ko
 AUDIO_DLKM += audio_platform.ko
-AUDIO_DLKM += audio_hdmi.ko
 AUDIO_DLKM += audio_stub.ko
 AUDIO_DLKM += audio_wcd9xxx.ko
 AUDIO_DLKM += audio_mbhc.ko
 AUDIO_DLKM += audio_native.ko
-AUDIO_DLKM += audio_wcd938x.ko
-AUDIO_DLKM += audio_wcd938x_slave.ko
 AUDIO_DLKM += audio_bolero_cdc.ko
-AUDIO_DLKM += audio_wsa_macro.ko
 AUDIO_DLKM += audio_va_macro.ko
 AUDIO_DLKM += audio_rx_macro.ko
 AUDIO_DLKM += audio_tx_macro.ko
-AUDIO_DLKM += audio_machine_lito.ko
+AUDIO_DLKM += audio_machine_bengal.ko
+AUDIO_DLKM += audio_wsa881x_analog.ko
 AUDIO_DLKM += audio_snd_event.ko
+AUDIO_DLKM += audio_wcd937x_slave.ko
+AUDIO_DLKM += audio_wcd937x.ko
 
 # Kernel modules install path
 KERNEL_MODULES_INSTALL := dlkm
