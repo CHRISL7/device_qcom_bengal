@@ -1,6 +1,13 @@
 # Enable AVB 2.0
 BOARD_AVB_ENABLE := true
 
+# Default A/B configuration
+ENABLE_AB ?= true
+
+# Enable Dynamic partition
+BOARD_DYNAMIC_PARTITION_ENABLE ?= true
+PRODUCT_SHIPPING_API_LEVEL ?= 29
+
 # Temporary bring-up config -->
 ALLOW_MISSING_DEPENDENCIES := true
 
@@ -25,11 +32,28 @@ BUILD_BROKEN_DUP_RULES := true
 TEMPORARY_DISABLE_PATH_RESTRICTIONS := true
 export TEMPORARY_DISABLE_PATH_RESTRICTIONS
 
+ifneq ($(strip $(BOARD_DYNAMIC_PARTITION_ENABLE)),true)
 # Enable chain partition for system, to facilitate system-only OTA in Treble.
 BOARD_AVB_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
 BOARD_AVB_SYSTEM_ALGORITHM := SHA256_RSA2048
 BOARD_AVB_SYSTEM_ROLLBACK_INDEX := 0
 BOARD_AVB_SYSTEM_ROLLBACK_INDEX_LOCATION := 1
+else
+PRODUCT_USE_DYNAMIC_PARTITIONS := true
+PRODUCT_PACKAGES += fastbootd
+# Add default implementation of fastboot HAL.
+PRODUCT_PACKAGES += android.hardware.fastboot@1.0-impl-mock
+ifeq ($(ENABLE_AB), true)
+PRODUCT_COPY_FILES += $(LOCAL_PATH)/fstab_AB_dynamic_partition.qti:$(TARGET_COPY_OUT_RAMDISK)/fstab.qcom
+else
+PRODUCT_COPY_FILES += $(LOCAL_PATH)/fstab_non_AB_dynamic_partition.qti:$(TARGET_COPY_OUT_RAMDISK)/fstab.qcom
+endif
+BOARD_AVB_VBMETA_SYSTEM := system
+BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
+BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := SHA256_RSA2048
+BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
+BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 2
+endif
 
 BOARD_HAVE_BLUETOOTH := false
 BOARD_HAVE_QCOM_FM := false
@@ -145,9 +169,6 @@ QMAA_ENABLED_HAL_MODULES :=
 #Default vendor image configuration
 ENABLE_VENDOR_IMAGE := true
 
-# Default A/B configuration
-ENABLE_AB ?= true
-
 # default is nosdcard, S/W button enabled in resource
 PRODUCT_CHARACTERISTICS := nosdcard
 
@@ -173,10 +194,23 @@ PRODUCT_HOST_PACKAGES += \
     brillo_update_payload
 # Boot control HAL test app
 PRODUCT_PACKAGES_DEBUG += bootctl
+
+PRODUCT_STATIC_BOOT_CONTROL_HAL := \
+  bootctrl.bengal \
+  librecovery_updater_msm \
+  libz \
+  libcutils
+
+PRODUCT_PACKAGES += \
+  update_engine_sideload
+
 endif
 DEVICE_FRAMEWORK_MANIFEST_FILE := device/qcom/bengal/framework_manifest.xml
 
 DEVICE_MANIFEST_FILE := device/qcom/bengal/manifest.xml
+ifeq ($(ENABLE_AB), true)
+DEVICE_MANIFEST_FILE += device/qcom/bengal/manifest_ab.xml
+endif
 DEVICE_MATRIX_FILE   := device/qcom/common/compatibility_matrix.xml
 
 # Kernel modules install path
@@ -219,7 +253,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_FULL_TREBLE_OVERRIDE := true
 PRODUCT_VENDOR_MOVE_ENABLED := true
 PRODUCT_COMPATIBLE_PROPERTY_OVERRIDE := true
-BOARD_SYSTEMSDK_VERSIONS := 28
+BOARD_SYSTEMSDK_VERSIONS := 29
 BOARD_VNDK_VERSION := current
 TARGET_MOUNT_POINTS_SYMLINKS := false
 
