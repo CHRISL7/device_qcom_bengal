@@ -18,6 +18,9 @@ TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := cortex-a75
 
+#Generate DTBO image
+BOARD_KERNEL_SEPARATED_DTBO := true
+
 TARGET_NO_BOOTLOADER := false
 TARGET_USES_UEFI := true
 TARGET_NO_KERNEL := false
@@ -70,6 +73,10 @@ ifneq ($(strip $(BOARD_DYNAMIC_PARTITION_ENABLE)),true)
     else
         BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x04000000
         TARGET_RECOVERY_FSTAB := device/qcom/bengal/recovery_non-AB_variant.fstab
+        ifeq ($(BOARD_KERNEL_SEPARATED_DTBO),true)
+            # Enable DTBO for recovery image
+            BOARD_INCLUDE_RECOVERY_DTBO := true
+        endif
     endif
 else
 # Define the Dynamic Partition sizes and groups.
@@ -79,6 +86,10 @@ else
     else
         BOARD_SUPER_PARTITION_SIZE := 6442450944
         TARGET_RECOVERY_FSTAB := device/qcom/bengal/recovery_non-AB_dynamic_partition.fstab
+    endif
+    ifeq ($(BOARD_KERNEL_SEPARATED_DTBO),true)
+        # Enable DTBO for recovery image
+        BOARD_INCLUDE_RECOVERY_DTBO := true
     endif
     BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
     BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 6438256640
@@ -155,9 +166,6 @@ endif
 
 #Add non-hlos files to ota packages
 ADD_RADIO_FILES := true
-
-#Generate DTBO image
-BOARD_KERNEL_SEPARATED_DTBO := true
 
 # Enable sensor multi HAL
 USE_SENSOR_MULTI_HAL := true
