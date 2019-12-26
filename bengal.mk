@@ -43,7 +43,24 @@ PRODUCT_USE_DYNAMIC_PARTITIONS := true
 PRODUCT_PACKAGES += fastbootd
 # Add default implementation of fastboot HAL.
 PRODUCT_PACKAGES += android.hardware.fastboot@1.0-impl-mock
+# f2fs utilities
+PRODUCT_PACKAGES += \
+ sg_write_buffer \
+ f2fs_io \
+ check_f2fs
+
+# Userdata checkpoint
+PRODUCT_PACKAGES += \
+ checkpoint_gc
+
 ifeq ($(ENABLE_AB), true)
+# Userdata checkpoint start
+AB_OTA_POSTINSTALL_CONFIG += \
+RUN_POSTINSTALL_vendor=true \
+POSTINSTALL_PATH_vendor=bin/checkpoint_gc \
+FILESYSTEM_TYPE_vendor=ext4 \
+POSTINSTALL_OPTIONAL_vendor=true
+# Userdata checkpoint end
 PRODUCT_COPY_FILES += $(LOCAL_PATH)/fstab_AB_dynamic_partition.qti:$(TARGET_COPY_OUT_RAMDISK)/fstab.qcom
 else
 PRODUCT_COPY_FILES += $(LOCAL_PATH)/fstab_non_AB_dynamic_partition.qti:$(TARGET_COPY_OUT_RAMDISK)/fstab.qcom
