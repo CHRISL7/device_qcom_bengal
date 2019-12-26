@@ -164,6 +164,18 @@ ifeq ($(HOST_OS),linux)
     endif
 endif
 
+# check for for userdebug and eng build variants and install the appropriate modules
+ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+    ifeq (,$(findstring perf_defconfig, $(KERNEL_DEFCONFIG)))
+        BOARD_VENDOR_KERNEL_MODULES += $(KERNEL_MODULES_OUT)/atomic64_test.ko
+        BOARD_VENDOR_KERNEL_MODULES += $(KERNEL_MODULES_OUT)/lkdtm.ko
+        BOARD_VENDOR_KERNEL_MODULES += $(KERNEL_MODULES_OUT)/locktorture.ko
+        BOARD_VENDOR_KERNEL_MODULES += $(KERNEL_MODULES_OUT)/rcutorture.ko
+        BOARD_VENDOR_KERNEL_MODULES += $(KERNEL_MODULES_OUT)/test_user_copy.ko
+        BOARD_VENDOR_KERNEL_MODULES += $(KERNEL_MODULES_OUT)/torture.ko
+    endif
+endif
+
 #Add non-hlos files to ota packages
 ADD_RADIO_FILES := true
 
