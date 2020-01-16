@@ -4,7 +4,7 @@
 #
 
 TARGET_BOARD_PLATFORM := bengal
-TARGET_BOOTLOADER_BOARD_NAME := msmnile # temporary until Bengal is supported by ABL
+TARGET_BOOTLOADER_BOARD_NAME := bengal/scuba
 
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
