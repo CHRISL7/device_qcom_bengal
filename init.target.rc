@@ -1,4 +1,4 @@
-# Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+# Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -94,6 +94,14 @@ on property:vendor.usb.controller=*
 on charger
     setprop vendor.usb.controller 4e00000.dwc3
     setprop sys.usb.configfs 1
+
+#heap_growth_limit
+on property:vendor.display.lcd_density=480
+   setprop dalvik.vm.heapgrowthlimit 128m
+on property:vendor.display.lcd_density=240
+   setprop dalvik.vm.heapgrowthlimit 96m
+on property:vendor.display.lcd_density=160
+   setprop dalvik.vm.heapgrowthlimit 96m
 
 #pd-mapper
 service vendor.pd_mapper /vendor/bin/pd-mapper
