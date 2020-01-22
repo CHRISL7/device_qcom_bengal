@@ -3,6 +3,10 @@
 # Product-specific compile-time definitions.
 #
 
+ifeq ($(SHIPPING_API_LEVEL),29)
+BOARD_SYSTEMSDK_VERSIONS:=29
+endif
+
 TARGET_BOARD_PLATFORM := bengal
 TARGET_BOOTLOADER_BOARD_NAME := bengal/scuba
 
