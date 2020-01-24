@@ -13,9 +13,6 @@ ifeq ($(SHIPPING_API_LEVEL),29)
 PRODUCT_SHIPPING_API_LEVEL := 29
 endif
 
-# Temporary bring-up config -->
-ALLOW_MISSING_DEPENDENCIES := true
-
 # For QSSI builds, we should skip building the system image. Instead we build the
 # "non-system" images (that we support).
 
