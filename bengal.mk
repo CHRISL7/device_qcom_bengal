@@ -6,7 +6,12 @@ ENABLE_AB ?= true
 
 # Enable Dynamic partition
 BOARD_DYNAMIC_PARTITION_ENABLE ?= true
-PRODUCT_SHIPPING_API_LEVEL ?= 29
+
+SHIPPING_API_LEVEL ?= 29
+
+ifeq ($(SHIPPING_API_LEVEL),29)
+PRODUCT_SHIPPING_API_LEVEL := 29
+endif
 
 # Temporary bring-up config -->
 ALLOW_MISSING_DEPENDENCIES := true
