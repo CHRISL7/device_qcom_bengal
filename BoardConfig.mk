@@ -34,9 +34,10 @@ BOARD_PRESIL_BUILD := true
 
 USE_OPENGL_RENDERER := true
 
-
+#Enable dtb in boot image and boot image header version 2 support.
+BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 # Set Header version for bootimage
-BOARD_BOOTIMG_HEADER_VERSION := 1
+BOARD_BOOTIMG_HEADER_VERSION := 2
 BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
 
 ifeq ($(ENABLE_AB), true)
@@ -149,7 +150,8 @@ TARGET_NO_RPC := true
 TARGET_PLATFORM_DEVICE_BASE := /devices/soc.0/
 TARGET_INIT_VENDOR_LIB := libinit_msm
 
-TARGET_KERNEL_APPEND_DTB := true
+#Disable appended dtb.
+TARGET_KERNEL_APPEND_DTB := false
 TARGET_COMPILE_WITH_MSM_KERNEL := true
 
 #Enable PD locater/notifier
