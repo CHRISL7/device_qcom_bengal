@@ -29,10 +29,10 @@ PRODUCT_BUILD_USERDATA_IMAGE := true
 TARGET_SKIP_OTA_PACKAGE := true
 TARGET_SKIP_OTATOOLS_PACKAGE := true
 
-BUILD_BROKEN_PHONY_TARGETS := true
+#BUILD_BROKEN_PHONY_TARGETS := true
 BUILD_BROKEN_DUP_RULES := true
 TEMPORARY_DISABLE_PATH_RESTRICTIONS := true
-export TEMPORARY_DISABLE_PATH_RESTRICTIONS
+#export TEMPORARY_DISABLE_PATH_RESTRICTIONS
 
 ifneq ($(strip $(BOARD_DYNAMIC_PARTITION_ENABLE)),true)
 # Enable chain partition for system, to facilitate system-only OTA in Treble.
@@ -159,12 +159,6 @@ PRODUCT_HOST_PACKAGES += \
     brillo_update_payload
 # Boot control HAL test app
 PRODUCT_PACKAGES_DEBUG += bootctl
-
-PRODUCT_STATIC_BOOT_CONTROL_HAL := \
-  bootctrl.bengal \
-  librecovery_updater_msm \
-  libz \
-  libcutils
 
 PRODUCT_PACKAGES += \
   update_engine_sideload
