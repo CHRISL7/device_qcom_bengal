@@ -1,8 +1,17 @@
 # Enable AVB 2.0
 BOARD_AVB_ENABLE := true
 
-# Temporary bring-up config -->
-ALLOW_MISSING_DEPENDENCIES := true
+# Default A/B configuration
+ENABLE_AB ?= true
+
+# Enable Dynamic partition
+BOARD_DYNAMIC_PARTITION_ENABLE ?= true
+
+SHIPPING_API_LEVEL ?= 29
+
+ifeq ($(SHIPPING_API_LEVEL),29)
+PRODUCT_SHIPPING_API_LEVEL := 29
+endif
 
 # For QSSI builds, we should skip building the system image. Instead we build the
 # "non-system" images (that we support).
@@ -25,17 +34,57 @@ BUILD_BROKEN_DUP_RULES := true
 TEMPORARY_DISABLE_PATH_RESTRICTIONS := true
 export TEMPORARY_DISABLE_PATH_RESTRICTIONS
 
+ifneq ($(strip $(BOARD_DYNAMIC_PARTITION_ENABLE)),true)
 # Enable chain partition for system, to facilitate system-only OTA in Treble.
 BOARD_AVB_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
 BOARD_AVB_SYSTEM_ALGORITHM := SHA256_RSA2048
 BOARD_AVB_SYSTEM_ROLLBACK_INDEX := 0
 BOARD_AVB_SYSTEM_ROLLBACK_INDEX_LOCATION := 1
+else
+PRODUCT_USE_DYNAMIC_PARTITIONS := true
+PRODUCT_PACKAGES += fastbootd
+# Add default implementation of fastboot HAL.
+PRODUCT_PACKAGES += android.hardware.fastboot@1.0-impl-mock
+# f2fs utilities
+PRODUCT_PACKAGES += \
+ sg_write_buffer \
+ f2fs_io \
+ check_f2fs
+
+# Userdata checkpoint
+PRODUCT_PACKAGES += \
+ checkpoint_gc
+
+ifeq ($(ENABLE_AB), true)
+# Userdata checkpoint start
+AB_OTA_POSTINSTALL_CONFIG += \
+RUN_POSTINSTALL_vendor=true \
+POSTINSTALL_PATH_vendor=bin/checkpoint_gc \
+FILESYSTEM_TYPE_vendor=ext4 \
+POSTINSTALL_OPTIONAL_vendor=true
+# Userdata checkpoint end
+PRODUCT_COPY_FILES += $(LOCAL_PATH)/fstab_AB_dynamic_partition.qti:$(TARGET_COPY_OUT_RAMDISK)/fstab.qcom
+else
+PRODUCT_COPY_FILES += $(LOCAL_PATH)/fstab_non_AB_dynamic_partition.qti:$(TARGET_COPY_OUT_RAMDISK)/fstab.qcom
+endif
+BOARD_AVB_VBMETA_SYSTEM := system
+BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
+BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := SHA256_RSA2048
+BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
+BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 2
+$(call inherit-product, build/make/target/product/gsi_keys.mk)
+endif
 
 BOARD_HAVE_BLUETOOTH := false
 BOARD_HAVE_QCOM_FM := false
 TARGET_DISABLE_PERF_OPTIMIATIONS := false
 
 TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
+
+# privapp-permissions whitelisting (To Fix CTS :privappPermissionsMustBeEnforced)
+PRODUCT_PROPERTY_OVERRIDES += ro.control_privapp_permissions=enforce
+
+TARGET_DEFINES_DALVIK_HEAP := true
 
 $(call inherit-product, device/qcom/vendor-common/common64.mk)
 # Temporary bring-up config <--
@@ -59,50 +108,15 @@ PRODUCT_BRAND := qti
 PRODUCT_MODEL := Bengal for arm64
 
 
-TARGET_USES_AOSP := true
+TARGET_USES_AOSP := false
 TARGET_USES_AOSP_FOR_AUDIO := false
 TARGET_USES_QCOM_BSP := false
 
 # RRO configuration
 TARGET_USES_RRO := true
 
-###########
-#QMAA flags starts
-###########
-#QMAA global flag for modular architecture
-#true means QMAA is enabled for system
-#false means QMAA is disabled for system
+TARGET_DISABLE_DISPLAY := false
 
-TARGET_USES_QMAA := true
-
-#QMAA tech team flag to override global QMAA per tech team
-#true means overriding global QMAA for this tech area
-#false means using global, no override
-
-#TARGET_USES_QMAA_OVERRIDE_DISPLAY := true
-#TARGET_USES_QMAA_OVERRIDE_AUDIO   := true
-#TARGET_USES_QMAA_OVERRIDE_VIDEO   := true
-#TARGET_USES_QMAA_OVERRIDE_CAMERA  := true
-#TARGET_USES_QMAA_OVERRIDE_GFX     := true
-#TARGET_USES_QMAA_OVERRIDE_WFD     := true
-#TARGET_USES_QMAA_OVERRIDE_SENSORS := true
-#TARGET_USES_QMAA_OVERRIDE_PERF    := true
-
-TARGET_USES_QMAA_OVERRIDE_DISPLAY := false
-TARGET_USES_QMAA_OVERRIDE_VIDEO   := false
-TARGET_USES_QMAA_OVERRIDE_CAMERA  := false
-TARGET_USES_QMAA_OVERRIDE_GFX     := false
-TARGET_USES_QMAA_OVERRIDE_WFD     := false
-TARGET_USES_QMAA_OVERRIDE_SENSORS := false
-TARGET_USES_QMAA_OVERRIDE_PERF    := false
-
-TARGET_DISABLE_DISPLAY := true
-
-###########
-#QMAA flags ends
-###########
-
-###########
 # Kernel configurations
 TARGET_KERNEL_VERSION := 4.19
 #Enable llvm support for kernel
@@ -117,22 +131,8 @@ QCOM_BOARD_PLATFORMS += bengal
 
 TARGET_USES_QSSI := true
 
-TARGET_USES_QMAA := true
-###QMAA Indicator Start###
-
-#Full QMAA HAL List
-QMAA_HAL_LIST :=
-
-#Indicator for each enabled QMAA HAL for this target. Each tech team locally verified their QMAA HAL and ensure code is updated/merged, then add their HAL module name to QMAA_ENABLED_HAL_MODULES as an QMAA enabling completion indicator
-QMAA_ENABLED_HAL_MODULES :=
-
-###QMAA Indicator End###
-
 #Default vendor image configuration
 ENABLE_VENDOR_IMAGE := true
-
-# Default A/B configuration
-ENABLE_AB ?= true
 
 # default is nosdcard, S/W button enabled in resource
 PRODUCT_CHARACTERISTICS := nosdcard
@@ -159,37 +159,24 @@ PRODUCT_HOST_PACKAGES += \
     brillo_update_payload
 # Boot control HAL test app
 PRODUCT_PACKAGES_DEBUG += bootctl
+
+PRODUCT_STATIC_BOOT_CONTROL_HAL := \
+  bootctrl.bengal \
+  librecovery_updater_msm \
+  libz \
+  libcutils
+
+PRODUCT_PACKAGES += \
+  update_engine_sideload
+
 endif
 DEVICE_FRAMEWORK_MANIFEST_FILE := device/qcom/bengal/framework_manifest.xml
 
 DEVICE_MANIFEST_FILE := device/qcom/bengal/manifest.xml
+ifeq ($(ENABLE_AB), true)
+DEVICE_MANIFEST_FILE += device/qcom/bengal/manifest_ab.xml
+endif
 DEVICE_MATRIX_FILE   := device/qcom/common/compatibility_matrix.xml
-
-#Audio DLKM
-AUDIO_DLKM := audio_apr.ko
-AUDIO_DLKM += audio_q6_pdr.ko
-AUDIO_DLKM += audio_q6_notifier.ko
-AUDIO_DLKM += audio_adsp_loader.ko
-AUDIO_DLKM += audio_q6.ko
-AUDIO_DLKM += audio_usf.ko
-AUDIO_DLKM += audio_pinctrl_lpi.ko
-AUDIO_DLKM += audio_swr.ko
-AUDIO_DLKM += audio_wcd_core.ko
-AUDIO_DLKM += audio_swr_ctrl.ko
-AUDIO_DLKM += audio_platform.ko
-AUDIO_DLKM += audio_stub.ko
-AUDIO_DLKM += audio_wcd9xxx.ko
-AUDIO_DLKM += audio_mbhc.ko
-AUDIO_DLKM += audio_native.ko
-AUDIO_DLKM += audio_bolero_cdc.ko
-AUDIO_DLKM += audio_va_macro.ko
-AUDIO_DLKM += audio_rx_macro.ko
-AUDIO_DLKM += audio_tx_macro.ko
-AUDIO_DLKM += audio_machine_bengal.ko
-AUDIO_DLKM += audio_wsa881x_analog.ko
-AUDIO_DLKM += audio_snd_event.ko
-AUDIO_DLKM += audio_wcd937x_slave.ko
-AUDIO_DLKM += audio_wcd937x.ko
 
 # Kernel modules install path
 KERNEL_MODULES_INSTALL := dlkm
@@ -231,7 +218,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_FULL_TREBLE_OVERRIDE := true
 PRODUCT_VENDOR_MOVE_ENABLED := true
 PRODUCT_COMPATIBLE_PROPERTY_OVERRIDE := true
-BOARD_SYSTEMSDK_VERSIONS := 28
+BOARD_SYSTEMSDK_VERSIONS := 29
 BOARD_VNDK_VERSION := current
 TARGET_MOUNT_POINTS_SYMLINKS := false
 
@@ -243,6 +230,10 @@ PRODUCT_BOOT_JARS += tcmiface
 # Vendor property to enable advanced network scanning
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.enableadvancedscan=true
+
+# Property to disable ZSL mode
+PRODUCT_PROPERTY_OVERRIDES += \
+    camera.disable_zsl_mode=1
 
 PRODUCT_PROPERTY_OVERRIDES += \
 ro.crypto.volume.filenames_mode = "aes-256-cts" \
