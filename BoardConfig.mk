@@ -32,9 +32,6 @@ TARGET_NO_KERNEL := false
 BOARD_PRESIL_BUILD := true
 -include $(QCPATH)/common/bengal/BoardConfigVendor.mk
 
-#Disable camera temporarily 
-USE_CAMERA_STUB := true
-
 USE_OPENGL_RENDERER := true
 
 #Enable dtb in boot image and boot image header version 2 support.
