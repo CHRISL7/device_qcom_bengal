@@ -1,5 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 
+SYSTEMEXT_SEPARATE_PARTITION_ENABLE = true
+
 #----------------------------------------------------------------------
 # Host compiler configs
 #----------------------------------------------------------------------

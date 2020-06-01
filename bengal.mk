@@ -4,6 +4,8 @@ BOARD_AVB_ENABLE := true
 # Default A/B configuration
 ENABLE_AB ?= true
 
+SYSTEMEXT_SEPARATE_PARTITION_ENABLE = true
+
 # Enable Dynamic partition
 BOARD_DYNAMIC_PARTITION_ENABLE ?= true
 
