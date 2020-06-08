@@ -106,15 +106,14 @@ TARGET_DEFINES_DALVIK_HEAP := true
 $(call inherit-product, device/qcom/vendor-common/common64.mk)
 # Temporary bring-up config <--
 
-$(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
-
 # Temporary bring-up config -->
 PRODUCT_SUPPORTS_VERITY := false
 # Temporary bring-up config <--
 ###########
 PRODUCT_PROPERTY_OVERRIDES  += \
      dalvik.vm.heapstartsize=8m \
-     dalvik.vm.heapsize=512m \
+     dalvik.vm.heapsize=256m \
+     dalvik.vm.heapgrowthlimit=128m \
      dalvik.vm.heaptargetutilization=0.75 \
      dalvik.vm.heapminfree=512k \
      dalvik.vm.heapmaxfree=8m

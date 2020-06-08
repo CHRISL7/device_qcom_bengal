@@ -95,14 +95,6 @@ on charger
     setprop vendor.usb.controller 4e00000.dwc3
     setprop sys.usb.configfs 1
 
-#heap_growth_limit
-on property:vendor.display.lcd_density=480
-   setprop dalvik.vm.heapgrowthlimit 128m
-on property:vendor.display.lcd_density=240
-   setprop dalvik.vm.heapgrowthlimit 96m
-on property:vendor.display.lcd_density=160
-   setprop dalvik.vm.heapgrowthlimit 96m
-
 #pd-mapper
 service vendor.pd_mapper /vendor/bin/pd-mapper
     class core
