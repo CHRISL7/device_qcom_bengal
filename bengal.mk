@@ -221,11 +221,6 @@ TARGET_MOUNT_POINTS_SYMLINKS := false
 PRODUCT_BOOT_JARS += telephony-ext
 PRODUCT_PACKAGES += telephony-ext
 
-#servicetracker HAL
-PRODUCT_PACKAGES += \
-    vendor.qti.hardware.servicetracker@1.1-impl \
-    vendor.qti.hardware.servicetracker@1.1-service
-
 PRODUCT_BOOT_JARS += tcmiface
 
 # Vendor property to enable advanced network scanning
