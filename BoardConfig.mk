@@ -67,44 +67,24 @@ endif
 
 BOARD_USES_METADATA_PARTITION := true
 
-### Dynamic partition Handling
-ifneq ($(strip $(BOARD_DYNAMIC_PARTITION_ENABLE)),true)
-    BOARD_VENDORIMAGE_PARTITION_SIZE := 1073741824
-    BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3221225472
-    BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
-    ifeq ($(ENABLE_AB), true)
-        TARGET_NO_RECOVERY := true
-        BOARD_USES_RECOVERY_AS_BOOT := true
-        TARGET_RECOVERY_FSTAB := device/qcom/bengal/recovery_AB_variant.fstab
-        BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
-    else
-        BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x04000000
-        TARGET_RECOVERY_FSTAB := device/qcom/bengal/recovery_non-AB_variant.fstab
-        ifeq ($(BOARD_KERNEL_SEPARATED_DTBO),true)
-            # Enable DTBO for recovery image
-            BOARD_INCLUDE_RECOVERY_DTBO := true
-        endif
-    endif
-else
 # Define the Dynamic Partition sizes and groups.
-    ifeq ($(ENABLE_AB), true)
-        BOARD_SUPER_PARTITION_SIZE := 8589934592
-        TARGET_RECOVERY_FSTAB := device/qcom/bengal/recovery_AB_dynamic_partition.fstab
-    else
-        BOARD_SUPER_PARTITION_SIZE := 4294967296
-        TARGET_RECOVERY_FSTAB := device/qcom/bengal/recovery_non-AB_dynamic_partition.fstab
-    endif
-    ifeq ($(BOARD_KERNEL_SEPARATED_DTBO),true)
-        # Enable DTBO for recovery image
-        BOARD_INCLUDE_RECOVERY_DTBO := true
-    endif
-    BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
-    # BOARD_QTI_DYNAMIC_PARTITIONS_SIZE = (BOARD_SUPER_PARTITION_SIZE/2) - 4MB
-    BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 4290772992
-    BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := vendor
-    BOARD_EXT4_SHARE_DUP_BLOCKS := true
-    BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x06000000
+ifeq ($(ENABLE_AB), true)
+   BOARD_SUPER_PARTITION_SIZE := 8589934592
+   TARGET_RECOVERY_FSTAB := device/qcom/bengal/recovery_AB_dynamic_partition.fstab
+else
+   BOARD_SUPER_PARTITION_SIZE := 4294967296
+   TARGET_RECOVERY_FSTAB := device/qcom/bengal/recovery_non-AB_dynamic_partition.fstab
 endif
+ifeq ($(BOARD_KERNEL_SEPARATED_DTBO),true)
+   # Enable DTBO for recovery image
+   BOARD_INCLUDE_RECOVERY_DTBO := true
+endif
+BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
+# BOARD_QTI_DYNAMIC_PARTITIONS_SIZE = (BOARD_SUPER_PARTITION_SIZE/2) - 4MB
+BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 4290772992
+BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := vendor
+BOARD_EXT4_SHARE_DUP_BLOCKS := true
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x06000000
 
 #Enable compilation of oem-extensions to recovery
 #These need to be explicitly
