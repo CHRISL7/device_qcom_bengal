@@ -67,7 +67,12 @@ BOARD_USES_METADATA_PARTITION := true
 
 # Define the Dynamic Partition sizes and groups.
 ifeq ($(ENABLE_AB), true)
-   BOARD_SUPER_PARTITION_SIZE := 8589934592
+   ifeq ($(ENABLE_VIRTUAL_AB), true)
+       BOARD_SUPER_PARTITION_SIZE := 4294967296
+   else
+       BOARD_SUPER_PARTITION_SIZE := 8589934592
+   endif
+
    TARGET_RECOVERY_FSTAB := device/qcom/bengal/recovery_AB_dynamic_partition.fstab
 else
    BOARD_SUPER_PARTITION_SIZE := 4294967296
