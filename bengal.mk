@@ -9,11 +9,8 @@ SYSTEMEXT_SEPARATE_PARTITION_ENABLE = true
 # Enable Dynamic partition
 BOARD_DYNAMIC_PARTITION_ENABLE ?= true
 
-SHIPPING_API_LEVEL ?= 29
-
-ifeq ($(SHIPPING_API_LEVEL),29)
-PRODUCT_SHIPPING_API_LEVEL := 29
-endif
+SHIPPING_API_LEVEL := 30
+PRODUCT_SHIPPING_API_LEVEL := $(SHIPPING_API_LEVEL)
 
 # For QSSI builds, we should skip building the system image. Instead we build the
 # "non-system" images (that we support).
