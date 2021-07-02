@@ -131,6 +131,15 @@ on property:sys.shutdown.requested=*
 on property:vold.decrypt=trigger_restart_framework
    start vendor.cnss_diag
 
+on property:ro.vendor.qti.soc_id=444
+    setprop ro.soc.model SM6115
+
+on property:ro.vendor.qti.soc_id=417
+    setprop ro.soc.model SM4250
+
+on property:ro.vendor.qti.soc_id=441
+    setprop ro.soc.model SM4125
+
 service vendor.cnss_diag /system/vendor/bin/cnss_diag -q -f -t HELIUM
    class main
    user system
