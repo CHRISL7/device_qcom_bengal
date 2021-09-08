@@ -98,6 +98,7 @@ TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
 # Enable incremental FS feature
 PRODUCT_PROPERTY_OVERRIDES += ro.incremental.enable=1
 
+PRODUCT_PACKAGES += init.qti.early_init.sh
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.soc.manufacturer=QTI
 

@@ -30,6 +30,8 @@
 on early-init
     exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules audio_q6_pdr audio_q6_notifier audio_snd_event audio_apr audio_adsp_loader audio_q6 audio_native audio_usf audio_pinctrl_lpi audio_swr audio_swr_ctrl audio_platform audio_stub audio_wcd_core audio_wcd9xxx audio_wsa881x_analog audio_bolero_cdc audio_va_macro audio_rx_macro audio_tx_macro audio_mbhc audio_wcd937x audio_wcd937x_slave audio_pm2250_spmi audio_rouleur audio_rouleur_slave audio_machine_bengal
     write /proc/sys/kernel/sched_boost 1
+    exec u:r:vendor_qti_init_shell:s0 -- /vendor/bin/init.qti.early_init.sh
+    setprop ro.soc.model ${ro.vendor.qti.soc_model}
 
 on init
     write /dev/stune/foreground/schedtune.sched_boost_no_override 1
@@ -130,15 +132,6 @@ on property:sys.shutdown.requested=*
 
 on property:vold.decrypt=trigger_restart_framework
    start vendor.cnss_diag
-
-on property:ro.vendor.qti.soc_id=444
-    setprop ro.soc.model SM6115
-
-on property:ro.vendor.qti.soc_id=417
-    setprop ro.soc.model SM4250
-
-on property:ro.vendor.qti.soc_id=441
-    setprop ro.soc.model SM4125
 
 service vendor.cnss_diag /system/vendor/bin/cnss_diag -q -f -t HELIUM
    class main
