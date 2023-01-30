@@ -121,6 +121,9 @@ PRODUCT_PROPERTY_OVERRIDES  += \
      dalvik.vm.heaptargetutilization=0.75 \
      dalvik.vm.heapminfree=512k \
      dalvik.vm.heapmaxfree=8m
+
+PRODUCT_PROPERTY_OVERRIDES += persist.vendor.rcs.singlereg.feature = 1
+
 # Target naming
 PRODUCT_NAME := bengal
 PRODUCT_DEVICE := bengal
