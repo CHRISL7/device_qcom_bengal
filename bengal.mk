@@ -231,6 +231,10 @@ PRODUCT_BOOT_JARS += tcmiface
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.enableadvancedscan=true
 
+# Vendor property to enable fetching of QoS parameters via IQtiRadio HAL
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.vendor.radio.fetchqos=true
+
 # Property to disable ZSL mode
 PRODUCT_PROPERTY_OVERRIDES += \
     camera.disable_zsl_mode=1
